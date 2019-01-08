@@ -2,8 +2,7 @@
 Jednoduché rozšíření Nette které zajištuje zobrazení názvu souboru se zalogovanou exception při zobrazení chyby 500 v produkčním režimu (viz. obrázek níže).
 Jedná se o jednoduchou úpravu výchozího systému chybových stránek Nette.
 
-![Nový vzhled chybové stránky 500]
-(docs/imgs/error.500.png)
+![Nový vzhled chybové stránky 500](https://raw.githubusercontent.com/MichaelPavlista/nette-error-handler/master/docs/imgs/error.500.png)
 
 ## Instalace
 - Nainstalujte balíček přes příkaz: `composer require pavlista/nette-error-handler`.
