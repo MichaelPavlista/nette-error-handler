@@ -1,0 +1,25 @@
+{
+  "name": "pavlista/nette-error-handler",
+  "description": "Nette framework error pages plugin",
+  "keywords": ["nette", "error", "tracy", "debug"],
+  "homepage": "https://github.com/MichaelPavlista/nette-error-handler",
+  "license": ["MIT"],
+  "authors": [
+    {
+      "name": "Michael Pavlista",
+      "homepage": "http://www.pavlista.cz/"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require":
+  {
+    "php": ">=7.1.0",
+    "nette/application": "^2.4",
+    "nette/http": "^2.4",
+    "nette/utils": "^2.4",
+    "tracy/tracy": "^2.4"
+  },
+  "autoload": {
+    "classmap": ["src/"]
+  }
+}
