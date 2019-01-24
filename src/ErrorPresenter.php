@@ -132,9 +132,15 @@ class ErrorPresenter implements Nette\Application\IPresenter
 
         return new Responses\CallbackResponse(function (Http\IRequest $httpRequest, Http\IResponse $httpResponse) use ($e, $logged): void
         {
+            // Zobrazujeme HTML chybovou stránku
             if (preg_match('#^text/html(?:;|$)#', $httpResponse->getHeader('Content-Type')))
             {
                 ErrorHandler::renderError($e, $logged);
+            }
+            // Zobrazení kódu chyby v CLI
+            elseif (PHP_SAPI === 'cli')
+            {
+                echo sprintf("error 500: %s\n", $logged ? ErrorHandler::getErrorFile($e) : 'Tracy is unable to log error');
             }
         });
     }
