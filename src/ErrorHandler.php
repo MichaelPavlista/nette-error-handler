@@ -63,6 +63,16 @@ final class ErrorHandler
             self::$logDispatcher = new LogDispatcher(Tracy\Debugger::$logDirectory, Tracy\Debugger::$email, Tracy\Debugger::getBlueScreen());
             self::$logDispatcher->directory = &Tracy\Debugger::$logDirectory; // nette back compatibility
             self::$logDispatcher->email = &Tracy\Debugger::$email;
+
+            // Přeneseme nastavení ze standartního Tracy Loggeru
+            $tracyLogger = Tracy\Debugger::getLogger();
+
+            if($tracyLogger instanceof Tracy\Logger)
+            {
+                self::$logDispatcher->fromEmail = $tracyLogger->fromEmail;
+                self::$logDispatcher->emailSnooze = $tracyLogger->emailSnooze;
+                self::$logDispatcher->mailer = $tracyLogger->mailer;
+            }
         }
 
         Tracy\Debugger::setLogger(self::$logDispatcher);
