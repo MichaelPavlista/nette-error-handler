@@ -8,7 +8,7 @@ use Nette\Database;
  * Class DeadlockLogger
  * @package ErrorHandlerModule
  */
-abstract class DeadlockLogger extends FilterLogger
+class DeadlockLogger extends FilterLogger
 {
     /** @const string priorita chyby typu deadlock */
     const DEADLOCK = 'deadlock';
