@@ -96,7 +96,7 @@ class ErrorPresenter implements Nette\Application\IPresenter
     {
         if(PHP_SAPI === 'cli')
         {
-            return new Responses\TextResponse("404: " . $exception->getMessage());
+            return new Responses\TextResponse('404: ' . $exception->getMessage() . "\n");
         }
 
         // Předáme požadavek na výchozí error presenter Nette
