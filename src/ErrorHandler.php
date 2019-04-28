@@ -3,7 +3,7 @@
 namespace ErrorHandlerModule;
 
 use LogicException, InvalidArgumentException, Throwable;
-use Tracy\Debugger;
+use Tracy;
 use Tracy\Logger;
 
 /**
@@ -20,6 +20,9 @@ final class ErrorHandler
 
     /** @var string cesta k výchozí šabloně chyby */
     private static $errorTemplate = self::DEFAULT_ERROR_TEMPLATE;
+
+    /** @var LogDispatcher|null */
+    private static $logDispatcher;
 
 
     /**
@@ -40,13 +43,32 @@ final class ErrorHandler
             throw new InvalidArgumentException(sprintf('Error template %s is missing or not readable', $errorTemplate));
         }
 
-        Debugger::$errorTemplate = $errorTemplate;
+        Tracy\Debugger::$errorTemplate = $errorTemplate;
 
         // Zaregistrování callbacku, který se zavolá po kritické chybě v aplikaci
-        Debugger::$onFatalError[] = [__CLASS__, 'onFatalError'];
+        Tracy\Debugger::$onFatalError[] = [__CLASS__, 'onFatalError'];
 
         // Error handler byl úspěšně inicializován
         self::$registered = TRUE;
+    }
+
+
+    /**
+     * Aktivuje a integruje vylepšený error logger do Tracy který umožňuje definovat pro jakou chybu se použije jaký ILogger
+     * @return LogDispatcher
+     */
+    public static function activateLogDispatcher(): LogDispatcher
+    {
+        if(!self::$logDispatcher)
+        {
+            self::$logDispatcher = new Logger(Tracy\Debugger::$logDirectory, Tracy\Debugger::$email, Tracy\Debugger::getBlueScreen());
+            self::$logDispatcher->directory = &Tracy\Debugger::$logDirectory; // back compatiblity
+            self::$logDispatcher->email = &Tracy\Debugger::$email;
+        }
+
+        Tracy\Debugger::setLogger(self::$logDispatcher);
+
+        return self::$logDispatcher;
     }
 
 
@@ -58,9 +80,9 @@ final class ErrorHandler
      */
     public static function getErrorFile(Throwable $error): string
     {
-        $tracyLogger = Debugger::getLogger();
+        $tracyLogger = Tracy\Debugger::getLogger();
 
-        if($tracyLogger instanceof Logger)
+        if($tracyLogger instanceof Tracy\Logger)
         {
             return basename($tracyLogger->getExceptionFile($error));
         }
@@ -77,7 +99,7 @@ final class ErrorHandler
      */
     public static function onFatalError(Throwable $error)
     {
-        if(Debugger::$errorTemplate !== self::$errorTemplate)
+        if(Tracy\Debugger::$errorTemplate !== self::$errorTemplate)
         {
             throw new LogicException('Tracy error template changed, error handler is disabled');
         }

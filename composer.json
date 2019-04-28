@@ -19,6 +19,13 @@
     "nette/utils": "^2.4",
     "tracy/tracy": "^2.4"
   },
+  "require-dev":
+  {
+    "nette/database": "^2.4"
+  },
+  "suggest": {
+    "nette/database": "For ErrorHandlerModule\\Logger\\DeadlockLogger"
+  },
   "autoload": {
     "classmap": ["src/"]
   }
