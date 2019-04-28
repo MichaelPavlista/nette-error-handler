@@ -92,8 +92,13 @@ class ErrorPresenter implements Nette\Application\IPresenter
      * @param Nette\Application\Request $request
      * @return Responses\ForwardResponse
      */
-    public function handleBadRequestException(Nette\Application\BadRequestException $exception, Nette\Application\Request $request) : Responses\ForwardResponse
+    public function handleBadRequestException(Nette\Application\BadRequestException $exception, Nette\Application\Request $request) : Nette\Application\IResponse
     {
+        if(PHP_SAPI === 'cli')
+        {
+            return new Responses\TextResponse("404: " . $exception->getMessage());
+        }
+
         // Předáme požadavek na výchozí error presenter Nette
         return new Responses\ForwardResponse($request->setPresenterName('Nette:Error'));
     }
