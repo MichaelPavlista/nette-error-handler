@@ -18,10 +18,13 @@ class LogDispatcher extends Tracy\Logger
     /**
      * Zaregistruje nový filtr pro filtrování logů aplikace (spustí se první vyhovují filtr)
      * @param IFilterLogger $filterLogger
+     * @return self
      */
-    public function registerFilterLogger(IFilterLogger $filterLogger)
+    public function registerFilterLogger(IFilterLogger $filterLogger): self
     {
         $this->filterLoggers[] = $filterLogger;
+
+        return $this;
     }
 
 
