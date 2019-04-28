@@ -4,7 +4,6 @@ namespace ErrorHandlerModule;
 
 use LogicException, InvalidArgumentException, Throwable;
 use Tracy;
-use Tracy\Logger;
 
 /**
  * Class ErrorHandler
@@ -61,8 +60,8 @@ final class ErrorHandler
     {
         if(!self::$logDispatcher)
         {
-            self::$logDispatcher = new Logger(Tracy\Debugger::$logDirectory, Tracy\Debugger::$email, Tracy\Debugger::getBlueScreen());
-            self::$logDispatcher->directory = &Tracy\Debugger::$logDirectory; // back compatiblity
+            self::$logDispatcher = new LogDispatcher(Tracy\Debugger::$logDirectory, Tracy\Debugger::$email, Tracy\Debugger::getBlueScreen());
+            self::$logDispatcher->directory = &Tracy\Debugger::$logDirectory; // nette back compatibility
             self::$logDispatcher->email = &Tracy\Debugger::$email;
         }
 
