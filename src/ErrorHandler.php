@@ -91,7 +91,7 @@ final class ErrorHandler
     {
         $tracyLogger = Tracy\Debugger::getLogger();
 
-        if($tracyLogger instanceof Tracy\Logger)
+        if(($tracyLogger instanceof Tracy\Logger) && $tracyLogger->directory)
         {
             return basename($tracyLogger->getExceptionFile($error));
         }
