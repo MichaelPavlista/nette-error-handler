@@ -11,10 +11,10 @@ use Nette\Database;
 class DeadlockLogger extends FilterLogger
 {
     /** @const string priorita chyby typu deadlock */
-    const DEADLOCK = 'deadlock';
+    public const DEADLOCK = 'deadlock';
 
     /** @var string|null přetížení priority logovaných zpráv přes tento logger */
-    protected $overridePriority = self::DEADLOCK;
+    protected ?string $overridePriority = self::DEADLOCK;
 
 
     /**

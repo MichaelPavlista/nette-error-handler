@@ -16,15 +16,6 @@ class ErrorPresenter implements Nette\Application\IPresenter
 {
     use Nette\SmartObject;
 
-    /** @var ILogger */
-    private $logger;
-
-    /** @var Nette\Application\IRouter */
-    private $router;
-
-    /** @var Http\Request */
-    private $httpRequest;
-
 
     /**
      * ErrorPresenter constructor.
@@ -32,13 +23,11 @@ class ErrorPresenter implements Nette\Application\IPresenter
      * @param Nette\Application\IRouter $router
      * @param Http\Request $httpRequest
      */
-    public function __construct(ILogger $logger, Nette\Application\IRouter $router, Http\Request $httpRequest)
-    {
-        $this->logger = $logger;
-        $this->router = $router;
-
-        $this->httpRequest = $httpRequest;
-    }
+    public function __construct(
+        private ILogger $logger,
+        private Nette\Routing\Router $router,
+        private Http\Request $httpRequest
+    ) {}
 
 
     /**
@@ -90,9 +79,9 @@ class ErrorPresenter implements Nette\Application\IPresenter
      * Funkce zajišťující vyhodnocení a přesměrování na presenter se zobrazením chyby 4xx
      * @param Nette\Application\BadRequestException $exception
      * @param Nette\Application\Request $request
-     * @return Responses\ForwardResponse
+     * @return Nette\Application\Response
      */
-    public function handleBadRequestException(Nette\Application\BadRequestException $exception, Nette\Application\Request $request) : Nette\Application\IResponse
+    public function handleBadRequestException(Nette\Application\BadRequestException $exception, Nette\Application\Request $request) : Nette\Application\Response
     {
         if(PHP_SAPI === 'cli')
         {
@@ -107,9 +96,9 @@ class ErrorPresenter implements Nette\Application\IPresenter
     /**
      * Vyhodnocení příkazu na error presenter
      * @param Nette\Application\Request $request
-     * @return Nette\Application\IResponse
+     * @return Nette\Application\Response
      */
-    final public function run(Nette\Application\Request $request): Nette\Application\IResponse
+    final public function run(Nette\Application\Request $request): Nette\Application\Response
     {
         $e = $request->getParameter('exception');
 
@@ -130,7 +119,7 @@ class ErrorPresenter implements Nette\Application\IPresenter
 
             $logged = TRUE;
         }
-        catch (Throwable $logError)
+        catch (Throwable)
         {
             $logged = FALSE;
         }

@@ -12,7 +12,7 @@ use Tracy;
 class LogDispatcher extends Tracy\Logger
 {
     /** @var IFilterLogger[] */
-    private $filterLoggers = [];
+    private array $filterLoggers = [];
 
 
     /**
@@ -30,11 +30,11 @@ class LogDispatcher extends Tracy\Logger
 
     /**
      * Logs message or exception
-     * @param  mixed  $message
-     * @param  string  $priority one of constant ILogger::INFO, WARNING, ERROR, EXCEPTION, CRITICAL
+     * @param mixed $message
+     * @param string $level one of constant ILogger::INFO, WARNING, ERROR, EXCEPTION, CRITICAL
      * @return string|null logged error filename
      */
-    public function log($message, $priority = self::INFO)
+    public function log($message, $level = self::INFO): ?string
     {
         if($this->filterLoggers)
         {
@@ -42,11 +42,11 @@ class LogDispatcher extends Tracy\Logger
             {
                 if($filterLogger->isMatch($message))
                 {
-                    return $filterLogger->log($message, $priority);
+                    return $filterLogger->log($message, $level);
                 }
             }
         }
 
-        return Tracy\Logger::log($message, $priority);
+        return Tracy\Logger::log($message, $level);
     }
 }

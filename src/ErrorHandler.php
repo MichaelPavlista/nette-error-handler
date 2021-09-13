@@ -12,16 +12,16 @@ use Tracy;
 final class ErrorHandler
 {
     /** @const string cesta k výchozí šabloně chyby */
-    const DEFAULT_ERROR_TEMPLATE = __DIR__ . '/error.500.phtml';
+    public const DEFAULT_ERROR_TEMPLATE = __DIR__ . '/error.500.phtml';
 
     /** @var bool byl error handler zaregistrován? */
-    private static $registered = FALSE;
+    private static bool $registered = FALSE;
 
     /** @var string cesta k výchozí šabloně chyby */
-    private static $errorTemplate = self::DEFAULT_ERROR_TEMPLATE;
+    private static string $errorTemplate = self::DEFAULT_ERROR_TEMPLATE;
 
     /** @var LogDispatcher|null */
-    private static $logDispatcher;
+    private static ?LogDispatcher $logDispatcher = NULL;
 
 
     /**
@@ -104,9 +104,8 @@ final class ErrorHandler
      * Funkce která se zavolá po kritické chybě v aplikaci
      * @param Throwable $error
      * @internal
-     * @throws
      */
-    public static function onFatalError(Throwable $error)
+    public static function onFatalError(Throwable $error): void
     {
         if(Tracy\Debugger::$errorTemplate !== self::$errorTemplate)
         {
@@ -120,7 +119,7 @@ final class ErrorHandler
      * @param Throwable $error
      * @param bool $logged
      */
-    public static function renderError(Throwable $error, bool $logged)
+    public static function renderError(Throwable $error, bool $logged): void
     {
         self::onFatalError($error);
 
