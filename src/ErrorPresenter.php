@@ -16,18 +16,31 @@ class ErrorPresenter implements Nette\Application\IPresenter
 {
     use Nette\SmartObject;
 
+    /** @var ILogger */
+    private ILogger $logger;
+
+    /** @var Nette\Routing\Router */
+    private Nette\Routing\Router $router;
+
+    /** @var Http\Request */
+    private Http\Request $httpRequest;
+
 
     /**
      * ErrorPresenter constructor.
      * @param ILogger $logger
-     * @param Nette\Application\IRouter $router
+     * @param Nette\Routing\Router $router
      * @param Http\Request $httpRequest
      */
     public function __construct(
-        private ILogger $logger,
-        private Nette\Routing\Router $router,
-        private Http\Request $httpRequest
-    ) {}
+        ILogger $logger,
+        Nette\Routing\Router $router,
+        Http\Request $httpRequest
+    ) {
+        $this->httpRequest = $httpRequest;
+        $this->router = $router;
+        $this->logger = $logger;
+    }
 
 
     /**
@@ -119,7 +132,7 @@ class ErrorPresenter implements Nette\Application\IPresenter
 
             $logged = TRUE;
         }
-        catch (Throwable)
+        catch (Throwable $throwable)
         {
             $logged = FALSE;
         }
