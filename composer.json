@@ -13,20 +13,25 @@
   "minimum-stability": "stable",
   "require":
   {
-    "php": ">=7.1.0",
-    "nette/application": "^2.4.16",
-    "nette/http": "^2.4",
-    "nette/utils": "^2.4",
-    "tracy/tracy": "^2.4"
+    "php": ">=7.1.0 <8.3",
+    "nette/application": "^3.1.0",
+    "nette/http": "^3.0.2",
+    "nette/utils": "^3.2.8",
+    "tracy/tracy": "^2.6.0"
   },
   "require-dev":
   {
-    "nette/database": "^2.4"
+    "nette/database": "^3.0.0",
+    "phpstan/phpstan": ">=1.8.1",
+    "roave/security-advisories": "dev-latest"
   },
   "suggest": {
     "nette/database": "For ErrorHandlerModule\\Logger\\DeadlockLogger"
   },
   "autoload": {
     "classmap": ["src/"]
+  },
+  "scripts": {
+    "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=1024M"
   }
 }

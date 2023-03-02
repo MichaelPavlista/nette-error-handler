@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace ErrorHandlerModule;
 
@@ -12,10 +12,10 @@ use Tracy;
 final class ErrorHandler
 {
     /** @const string cesta k výchozí šabloně chyby */
-    const DEFAULT_ERROR_TEMPLATE = __DIR__ . '/error.500.phtml';
+    public const DEFAULT_ERROR_TEMPLATE = __DIR__ . '/error.500.phtml';
 
     /** @var bool byl error handler zaregistrován? */
-    private static $registered = FALSE;
+    private static $registered = false;
 
     /** @var string cesta k výchozí šabloně chyby */
     private static $errorTemplate = self::DEFAULT_ERROR_TEMPLATE;
@@ -48,7 +48,7 @@ final class ErrorHandler
         Tracy\Debugger::$onFatalError[] = [__CLASS__, 'onFatalError'];
 
         // Error handler byl úspěšně inicializován
-        self::$registered = TRUE;
+        self::$registered = true;
     }
 
 
@@ -103,10 +103,10 @@ final class ErrorHandler
     /**
      * Funkce která se zavolá po kritické chybě v aplikaci
      * @param Throwable $error
+     * @return void
      * @internal
-     * @throws
      */
-    public static function onFatalError(Throwable $error)
+    public static function onFatalError(Throwable $error): void
     {
         if(Tracy\Debugger::$errorTemplate !== self::$errorTemplate)
         {
@@ -120,7 +120,7 @@ final class ErrorHandler
      * @param Throwable $error
      * @param bool $logged
      */
-    public static function renderError(Throwable $error, bool $logged)
+    public static function renderError(Throwable $error, bool $logged): void
     {
         self::onFatalError($error);
 

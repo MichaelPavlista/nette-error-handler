@@ -1,0 +1,11 @@
+version: '2.1'
+services:
+  nette-error-handler:
+    container_name: 'nette-error-handler'
+    image: registry.gitlab.rtsoft.cz/rtsoft/docker/php82-debian:3.3
+    environment:
+      - XDEBUG_ENABLED=0
+    ports:
+      - '443:443'
+    volumes:
+      - ./:/var/www/html

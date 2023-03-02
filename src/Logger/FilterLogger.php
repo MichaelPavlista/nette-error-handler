@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace ErrorHandlerModule\Logger;
 
@@ -20,7 +20,7 @@ abstract class FilterLogger extends Logger implements IFilterLogger
      * @param string $priority one of constant ILogger::INFO, WARNING, ERROR (sends email), EXCEPTION (sends email), CRITICAL (sends email)
      * @return string|null logged error filename
      */
-    public function log($message, $priority = self::INFO)
+    public function log($message, $priority = self::INFO): ?string
     {
         if($this->isMatch($message))
         {

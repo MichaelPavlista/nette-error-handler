@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace ErrorHandlerModule;
 
@@ -19,47 +19,14 @@ class ErrorPresenter implements Nette\Application\IPresenter
     /** @var ILogger */
     private $logger;
 
-    /** @var Nette\Application\IRouter */
-    private $router;
-
-    /** @var Http\Request */
-    private $httpRequest;
-
 
     /**
      * ErrorPresenter constructor.
      * @param ILogger $logger
-     * @param Nette\Application\IRouter $router
-     * @param Http\Request $httpRequest
      */
-    public function __construct(ILogger $logger, Nette\Application\IRouter $router, Http\Request $httpRequest)
+    public function __construct(ILogger $logger)
     {
         $this->logger = $logger;
-        $this->router = $router;
-
-        $this->httpRequest = $httpRequest;
-    }
-
-
-    /**
-     * Vrací název modulu na který mířil původní request, který skončil chybou
-     * @return string|null
-     */
-    final public function getRequestModule(): ?string
-    {
-        $matches = $this->router->match($this->httpRequest);
-
-        if ($matches instanceof Nette\Application\Request)
-        {
-            $requestedModule = Nette\Application\Helpers::splitName($matches->getPresenterName())[0];
-
-            if($requestedModule)
-            {
-                return $requestedModule;
-            }
-        }
-
-        return NULL;
     }
 
 
@@ -90,9 +57,9 @@ class ErrorPresenter implements Nette\Application\IPresenter
      * Funkce zajišťující vyhodnocení a přesměrování na presenter se zobrazením chyby 4xx
      * @param Nette\Application\BadRequestException $exception
      * @param Nette\Application\Request $request
-     * @return Responses\ForwardResponse
+     * @return Nette\Application\Response
      */
-    public function handleBadRequestException(Nette\Application\BadRequestException $exception, Nette\Application\Request $request) : Nette\Application\IResponse
+    public function handleBadRequestException(Nette\Application\BadRequestException $exception, Nette\Application\Request $request) : Nette\Application\Response
     {
         if(PHP_SAPI === 'cli')
         {
@@ -107,10 +74,11 @@ class ErrorPresenter implements Nette\Application\IPresenter
     /**
      * Vyhodnocení příkazu na error presenter
      * @param Nette\Application\Request $request
-     * @return Nette\Application\IResponse
+     * @return Nette\Application\Response
      */
-    final public function run(Nette\Application\Request $request): Nette\Application\IResponse
+    final public function run(Nette\Application\Request $request): Nette\Application\Response
     {
+        /** @var Throwable $e */
         $e = $request->getParameter('exception');
 
         // Pokud se jedná o očekávanou chybu 4xx
@@ -138,7 +106,7 @@ class ErrorPresenter implements Nette\Application\IPresenter
         return new Responses\CallbackResponse(function (Http\IRequest $httpRequest, Http\IResponse $httpResponse) use ($e, $logged): void
         {
             // Zobrazujeme HTML chybovou stránku
-            if (preg_match('#^text/html(?:;|$)#', $httpResponse->getHeader('Content-Type')))
+            if (preg_match('#^text/html(?:;|$)#', (string) $httpResponse->getHeader('Content-Type')))
             {
                 ErrorHandler::renderError($e, $logged);
             }

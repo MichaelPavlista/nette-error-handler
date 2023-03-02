@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace ErrorHandlerModule\Logger;
 
@@ -12,7 +12,7 @@ interface IFilterLogger extends ILogger
 {
     /**
      * Splňuje logovaná zpráva podmínku tohoto loggeru?
-     * @param $message
+     * @param mixed $message
      * @return bool
      */
     public function isMatch($message): bool;
