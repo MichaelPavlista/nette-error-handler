@@ -4,12 +4,13 @@ namespace ErrorHandlerModule;
 
 /**
  * Výchozí chybová stránka aplikace
- * @var \Throwable $exception chyba ke které došlo
  * @var bool $logged byla chyba úspěšně zalogována?
  */
 
-// Načtení názvu souboru chyby
-$errorFile = ErrorHandler::getErrorFile($exception);
+// Načtení názvu souboru chyby.
+$errorFile = (isset($exception) && $exception instanceof \Throwable)
+    ? ErrorHandler::getErrorFile($exception)
+    : 'no code';
 
 ?>
 <!DOCTYPE html><!-- "' --></textarea></script></style></pre></xmp></a></audio></button></canvas></datalist></details></dialog></iframe></listing></meter></noembed></noframes></noscript></optgroup></option></progress></rp></select></table></template></title></video>
