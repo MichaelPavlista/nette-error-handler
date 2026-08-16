@@ -6,19 +6,16 @@ use ErrorHandlerModule\Logger\IFilterLogger;
 use Tracy;
 
 /**
- * Class Logger
- * @package ErrorHandlerModule
+ * Class LogDispatcher
  */
 class LogDispatcher extends Tracy\Logger
 {
     /** @var IFilterLogger[] */
-    private $filterLoggers = [];
+    private array $filterLoggers = [];
 
 
     /**
      * Zaregistruje nový filtr pro filtrování logů aplikace (spustí se první vyhovují filtr)
-     * @param IFilterLogger $filterLogger
-     * @return self
      */
     public function registerFilterLogger(IFilterLogger $filterLogger): self
     {
@@ -27,26 +24,25 @@ class LogDispatcher extends Tracy\Logger
         return $this;
     }
 
-
     /**
      * Logs message or exception
-     * @param  mixed  $message
-     * @param  string  $priority one of constant ILogger::INFO, WARNING, ERROR, EXCEPTION, CRITICAL
+     * @param mixed $message
+     * @param string $level one of constant ILogger::INFO, WARNING, ERROR, EXCEPTION, CRITICAL
      * @return string|null logged error filename
      */
-    public function log($message, $priority = self::INFO)
+    public function log(mixed $message, string $level = self::INFO): ?string
     {
-        if($this->filterLoggers)
+        foreach($this->filterLoggers as $filterLogger)
         {
-            foreach ($this->filterLoggers as $filterLogger)
+            if($filterLogger->isMatch($message))
             {
-                if($filterLogger->isMatch($message))
-                {
-                    return $filterLogger->log($message, $priority);
-                }
+                // Tracy\ILogger::log() nemá deklarovaný návratový typ, potomci Tracy\Logger vrací název souboru s chybou
+                $logFile = $filterLogger->log($message, $level);
+
+                return is_string($logFile) ? $logFile : null;
             }
         }
 
-        return Tracy\Logger::log($message, $priority);
+        return parent::log($message, $level);
     }
 }

@@ -1,5 +1,38 @@
+# Společný základ konfigurace PHPStanu — nespouští se přímo.
+# Spouští se přes phpstan.min-php.neon a phpstan.max-php.neon.
 includes:
+  - vendor/phpstan/phpstan-nette/extension.neon
+  - vendor/phpstan/phpstan-strict-rules/rules.neon
+  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+  - phpstan-banned-code.neon
+  - phpstan-baseline.neon
+
 parameters:
-  level: max
   paths:
-      - src
+    - src
+
+  editorUrlTitle: '%%relFile%%:%%line%%'
+  editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+  level: max
+  parallel:
+    processTimeout: 600.0
+
+  reportUnmatchedIgnoredErrors: true
+
+  checkExplicitMixedMissingReturn: true
+  checkFunctionNameCase: true
+  checkInternalClassCaseSensitivity: true
+  checkTooWideReturnTypesInProtectedAndPublicMethods: true
+  rememberPossiblyImpureFunctionValues: true
+  polluteScopeWithLoopInitialAssignments: false
+  polluteScopeWithAlwaysIterableForeach: false
+  reportMaybesInMethodSignatures: false
+  reportMaybesInPropertyPhpDocTypes: false
+  treatPhpDocTypesAsCertain: false
+
+  strictRules:
+    booleansInConditions: false
+    disallowedEmpty: false
+    disallowedShortTernary: false
+    noVariableVariables: false
+    numericOperandsInArithmeticOperators: false

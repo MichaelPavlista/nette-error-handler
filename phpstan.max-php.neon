@@ -1,0 +1,7 @@
+# Kontrola kompatibility s nejvyšší podporovanou verzí PHP.
+includes:
+  - phpstan.neon
+
+parameters:
+  phpVersion: 80500
+  tmpDir: temp/.tools-cache/phpstan-max-php-%env.PHPSTAN_RUNTIME%
