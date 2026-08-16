@@ -5,7 +5,8 @@ Jednoduché rozšíření Nette které zajištuje zobrazení názvu souboru se z
 
 ## Požadavky
 - PHP 8.2 – 8.5
-- nette/application 3.2 – 3.3, nette/http 3.3, nette/utils 4.0.4 – 4.1, tracy/tracy 2.10 – 2.x
+- nette/application 3.2 – 3.3, nette/http 3.3 – 3.4, nette/utils 4.0.4 – 4.1, tracy/tracy 2.10 – 2.x
+  (nette/application 3.3 a nette/http 3.4 samy vyžadují PHP 8.3+, na PHP 8.2 se proto použije nette/application 3.2 a nette/http 3.3)
 - nette/database 3.1.7 – 3.2 (volitelně, pouze pro `ErrorHandlerModule\Logger\DeadlockLogger`)
 
 ## Instalace

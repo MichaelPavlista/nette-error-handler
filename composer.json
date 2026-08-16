@@ -15,7 +15,7 @@
   {
     "php": ">=8.2.0 <8.6",
     "nette/application": ">=3.2.0 <3.4",
-    "nette/http": ">=3.3.0 <3.4",
+    "nette/http": ">=3.3.0 <3.5",
     "nette/utils": ">=4.0.4 <4.2",
     "tracy/tracy": ">=2.10 <3"
   },
