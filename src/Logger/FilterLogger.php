@@ -6,27 +6,26 @@ use Tracy\Logger;
 
 /**
  * Class FilterLogger
- * @package ErrorHandlerModule\Loggers
  */
 abstract class FilterLogger extends Logger implements IFilterLogger
 {
     /** @var string|null přetížení priority logovaných zpráv přes tento logger */
-    protected $overridePriority;
+    protected ?string $overridePriority = null;
 
 
     /**
      * Logs message or exception to file and sends email notification.
      * @param mixed $message
-     * @param string $priority one of constant ILogger::INFO, WARNING, ERROR (sends email), EXCEPTION (sends email), CRITICAL (sends email)
+     * @param string $level one of constant ILogger::INFO, WARNING, ERROR (sends email), EXCEPTION (sends email), CRITICAL (sends email)
      * @return string|null logged error filename
      */
-    public function log($message, $priority = self::INFO): ?string
+    public function log(mixed $message, string $level = self::INFO): ?string
     {
         if($this->isMatch($message))
         {
-            return parent::log($message, $this->overridePriority ?: $priority);
+            return parent::log($message, $this->overridePriority ?: $level);
         }
 
-        return NULL;
+        return null;
     }
 }

@@ -6,27 +6,28 @@ use Nette\Database;
 
 /**
  * Class DeadlockLogger
- * @package ErrorHandlerModule
  */
 class DeadlockLogger extends FilterLogger
 {
     /** @const string priorita chyby typu deadlock */
     public const DEADLOCK = 'deadlock';
 
+    /** @const int MySQL error kód uváznutí transakcí */
+    private const MYSQL_DEADLOCK_CODE = 1213;
+
+
     /** @var string|null přetížení priority logovaných zpráv přes tento logger */
-    protected $overridePriority = self::DEADLOCK;
+    protected ?string $overridePriority = self::DEADLOCK;
 
 
     /**
      * Jedná se o MySQL chybu deadlock?
-     * @param mixed $message
-     * @return bool
      */
-    public function isMatch($message): bool
+    public function isMatch(mixed $message): bool
     {
         if($message instanceof Database\DriverException)
         {
-            return $message->getDriverCode() === 1213;
+            return (int) $message->getDriverCode() === self::MYSQL_DEADLOCK_CODE;
         }
 
         return false;

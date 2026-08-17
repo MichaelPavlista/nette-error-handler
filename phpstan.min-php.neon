@@ -1,0 +1,10 @@
+# Kontrola kompatibility s nejnižší podporovanou verzí PHP.
+includes:
+  - phpstan.neon
+
+parameters:
+  phpVersion: 80200
+  tmpDir: temp/.tools-cache/phpstan-min-php-%env.PHPSTAN_RUNTIME%
+  # Sdílená baseline se generuje z analýzy nejvyšší podporované verze PHP —
+  # může obsahovat ignory (deprecations), které analýza jako 8.2 nevyprodukuje.
+  reportUnmatchedIgnoredErrors: false
