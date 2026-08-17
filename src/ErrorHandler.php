@@ -24,6 +24,9 @@ final class ErrorHandler
 
     private static ?LogDispatcher $logDispatcher = null;
 
+    /** @var (callable(Tracy\ILogger): ?Tracy\Logger)|null funkce extrahující standardní Tracy logger z vlastního loggeru */
+    private static $loggerResolver = null;
+
 
     /**
      * Zaregistruje error handler do Nette
@@ -55,6 +58,53 @@ final class ErrorHandler
     }
 
     /**
+     * Nastaví funkci, která se pokusí ze zaregistrovaného loggeru Tracy získat standardní Tracy\Logger.
+     * Použije se pouze v případě, že logger nastavený v Tracy sám o sobě není Tracy\Logger
+     * (typicky když aplikace standardní logger obaluje vlastní implementací).
+     * Funkce vrací Tracy\Logger, nebo null pokud jej z předaného loggeru nelze získat.
+     * @param (callable(Tracy\ILogger): ?Tracy\Logger)|null $loggerResolver
+     */
+    public static function setLoggerResolver(?callable $loggerResolver): void
+    {
+        self::$loggerResolver = $loggerResolver;
+    }
+
+    /**
+     * Vrací standardní Tracy logger zaregistrovaný v Tracy, nebo null pokud jej nelze získat
+     */
+    public static function getTracyLogger(): ?Tracy\Logger
+    {
+        // Načteme Tracy loger a pokud je standardní, vrátíme ho.
+        $logger = Tracy\Debugger::getLogger();
+
+        if($logger instanceof Tracy\Logger)
+        {
+            return $logger;
+        }
+
+        // Pokud není definovaný logger resolver, vrátíme null.
+        if(self::$loggerResolver === null)
+        {
+            return null;
+        }
+
+        // Pokud je definovaný logger resolver, zavoláme ho.
+        // Metoda se volá i při vykreslování chybové stránky, selhání resolveru nesmí vykreslení shodit.
+        try
+        {
+            $resolvedLogger = (self::$loggerResolver)($logger);
+
+            return $resolvedLogger instanceof Tracy\Logger
+                ? $resolvedLogger
+                : null;
+        }
+        catch(Throwable)
+        {
+            return null;
+        }
+    }
+
+    /**
      * Aktivuje a integruje vylepšený error logger do Tracy který umožňuje definovat pro jakou chybu se použije jaký ILogger
      */
     public static function activateLogDispatcher(): LogDispatcher
@@ -71,9 +121,9 @@ final class ErrorHandler
             self::$logDispatcher->email = &Tracy\Debugger::$email;
 
             // Přeneseme nastavení ze standartního Tracy Loggeru
-            $tracyLogger = Tracy\Debugger::getLogger();
+            $tracyLogger = self::getTracyLogger();
 
-            if($tracyLogger instanceof Tracy\Logger)
+            if($tracyLogger !== null)
             {
                 self::$logDispatcher->fromEmail = $tracyLogger->fromEmail;
                 self::$logDispatcher->emailSnooze = $tracyLogger->emailSnooze;
@@ -92,9 +142,9 @@ final class ErrorHandler
      */
     public static function getErrorFile(Throwable $error): string
     {
-        $tracyLogger = Tracy\Debugger::getLogger();
+        $tracyLogger = self::getTracyLogger();
 
-        if(($tracyLogger instanceof Tracy\Logger) && $tracyLogger->directory)
+        if($tracyLogger !== null && $tracyLogger->directory)
         {
             return basename($tracyLogger->getExceptionFile($error));
         }

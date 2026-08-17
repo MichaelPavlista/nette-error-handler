@@ -21,6 +21,25 @@ application:
 ErrorHandlerModule\ErrorHandler::register();
 ```
 
+## Vlastní logger obalující Tracy logger
+Modul potřebuje ke zjištění názvu souboru s chybou přístup ke standardnímu `Tracy\Logger`.
+Pokud aplikace v Tracy registruje vlastní `Tracy\ILogger`, který standardní logger **obaluje**
+(místo aby z něj dědil), zaregistrujte v bootstrapu funkci, která jej z něj získá:
+```php
+ErrorHandlerModule\ErrorHandler::setLoggerResolver(
+    static fn (Tracy\ILogger $logger): ?Tracy\Logger =>
+        $logger instanceof MyWrappingLogger ? $logger->getInnerLogger() : null,
+);
+```
+Bez toho vrací `ErrorHandler::getErrorFile()` prázdný řetězec a `ErrorHandler::activateLogDispatcher()`
+nepřenese do `LogDispatcher` nastavení odesílání e-mailů (`fromEmail`, `emailSnooze`, `mailer`).
+
+Resolver musí být nastaven **před** prvním voláním `ErrorHandler::activateLogDispatcher()` — nastavení
+e-mailů se přenáší pouze při vytvoření `LogDispatcher`u a později se už nedoplní.
+
+Pozor: `ErrorHandler::activateLogDispatcher()` nastaví do Tracy `LogDispatcher` a váš obalující logger
+tím **zcela nahradí** — resolver z něj přenese jen zmíněné nastavení, ne jeho chování při logování.
+
 ## Omezení
 Vlastní chybovou šablonu předávejte **výhradně** přes `ErrorHandler::register()`:
 ```php
